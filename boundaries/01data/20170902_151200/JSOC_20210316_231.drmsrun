@@ -1,0 +1,56 @@
+#! /bin/csh -f
+set echo
+set histchars
+set_info_sock -C JSOC_DBHOST=hmidb2 ds='jsoc.export[JSOC_20210316_231]' Status=1
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+set REQDIR = `show_info_sock JSOC_DBHOST=hmidb2 -q -p 'jsoc.export[JSOC_20210316_231]'`
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+cd $REQDIR
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+echo Node = $HOSTNAME
+echo JSOC_DBHOST = hmidb2, Processing DBHOST = hmidb
+echo SUdir = $REQDIR
+echo PATH = $PATH
+echo path = $path
+jsoc_export_as_fits JSOC_DBHOST=hmidb reqid='JSOC_20210316_231' expversion=0.5 rsquery=hmi\.B\_720s\[2017\.09\.02\_15\:10\:00\/0\.2h\]\[\?\ drms\.image\_exists\(quality\)\ \?\]\{inclination\,azimuth\,disambig\,field\} n=0 path=$REQDIR ffmt='hmi.B_720s.{T_REC:A}.{segment}' method='url-tar' protocol='fits' JSOC_DBNAME=jsoc JSOC_DBUSER=production 
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+jsoc_export_make_index
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+set EXPSIZE = `extractexpsize.pl $REQDIR/index.json`
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+set_info_sock JSOC_DBHOST=hmidb2 ds='jsoc.export[JSOC_20210316_231]' Size=$EXPSIZE
+tar  chf ../JSOC_20210316_231.tar ./
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+find . -not -path . -not -name 'JSOC_20210316_231.*' -not -name 'index.*' -print0 | xargs -0 -L 32 rm -rf
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+mv ../JSOC_20210316_231.tar .
+set RUNSTAT = $status
+if ($RUNSTAT) goto EXITPLACE
+set DoneTime = `date -u '+%Y.%m.%d_%H:%M:%S_UT'`
+set_info_sock JSOC_DBHOST=hmidb2 ds='jsoc.export[JSOC_20210316_231]' Status=0 ExpTime=$DoneTime
+# NOTE - this is not the final runlog; the qsub script will continue to write to it in
+# /home/jsoc/exports/tmp; at the end of the qsub script, the runlog gets MOVED to
+# /home/jsoc/exports/tmp/done
+cp /home/jsoc/exports/tmp/JSOC_20210316_231.runlog ./JSOC_20210316_231.runlog 
+if ( -f /home/jsoc/exports/tmp/JSOC_20210316_231.emlog ) then
+  mv /home/jsoc/exports/tmp/JSOC_20210316_231.emlog ./JSOC_20210316_231.emlog 
+endif
+EXITPLACE:
+if ($RUNSTAT) then
+  echo XXXXXXXXXXXXXXXXXXXXXXX ERROR EXIT XXXXXXXXXXXXXXXXXXXXXXXXXXX
+printenv
+endif
+show_info_sock JSOC_DBHOST=hmidb2 -q -r 'jsoc.export[JSOC_20210316_231]' > /home/jsoc/exports/tmp/JSOC_20210316_231.recnum 
+set LOCKSTAT = $status
+if ($LOCKSTAT) then
+  show_info JSOC_DBHOST=hmidb2 -q -r 'jsoc.export[JSOC_20210316_231]' > /home/jsoc/exports/tmp/JSOC_20210316_231.recnum 
+endif
+exit $RUNSTAT

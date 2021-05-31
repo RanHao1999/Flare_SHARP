@@ -1,0 +1,52 @@
+#! /bin/csh -f
+set echo
+if (${?JSOCROOT_EXPORT}) then
+  set path = ($JSOCROOT_EXPORT/bin/$JSOC_MACHINE $JSOCROOT_EXPORT/scripts $path)
+endif
+while (`show_info JSOC_DBHOST=hmidb2 -q 'jsoc.export_new[JSOC_20210316_231]' key=Status JSOC_DBNAME=jsoc JSOC_DBUSER=production ` == 2)
+  echo waiting for jsocdb commit >> /home/jsoc/exports/tmp/JSOC_20210316_231.runlog 
+  sleep 1
+end 
+setenv JSOC_DBNAME jsoc
+setenv JSOC_DBUSER production
+setenv JSOC_DBHOST hmidb2
+setenv JSOC_DBEXPORTHOST hmidb2
+drms_run JSOC_DBHOST=hmidb2 /SUM14/D1379332675/S00000/JSOC_20210316_231.drmsrun >>& /home/jsoc/exports/tmp/JSOC_20210316_231.runlog 
+set DRMS_ERROR=$status
+set NewRecnum=`cat /home/jsoc/exports/tmp/JSOC_20210316_231.recnum` 
+set WAITCOUNT = 20
+while (`show_info JSOC_DBHOST=hmidb2 -q -r 'jsoc.export[JSOC_20210316_231]' JSOC_DBNAME=jsoc JSOC_DBUSER=production ` < $NewRecnum)
+  echo waiting for jsocdb drms_run commit >> /home/jsoc/exports/tmp/JSOC_20210316_231.runlog 
+  @ WAITCOUNT = $WAITCOUNT - 1
+  if ($WAITCOUNT <= 0) then
+    set DRMS_ERROR = -1
+    break
+  endif
+  sleep 1
+end 
+# email address is hq_turtle@163.com
+set Notify=hq_turtle@163.com
+set REQDIR = `show_info JSOC_DBHOST=hmidb2 -q -p 'jsoc.export[JSOC_20210316_231]' JSOC_DBNAME=jsoc JSOC_DBUSER=production `
+if ($DRMS_ERROR) then
+  # export failure
+  set_info -C JSOC_DBHOST=hmidb2  ds='jsoc.export[JSOC_20210316_231]' Status=4 JSOC_DBNAME=jsoc JSOC_DBUSER=production 
+  if ("$Notify" != 0) then
+    mail -n -s 'JSOC export FAILED - JSOC_20210316_231' "$Notify" <<!
+Error status returned from DRMS session.
+See log files at http://jsoc.stanford.edu/$REQDIR
+Also complete log file at /home/jsoc/exports/tmp/JSOC_20210316_231.runlog
+!
+  endif
+else
+  # export success
+  if ("$Notify" != 0) then
+    mail -n -s 'JSOC export complete - JSOC_20210316_231' "$Notify" <<!
+JSOC export request JSOC_20210316_231 is complete.
+Results at http://jsoc.stanford.edu$REQDIR
+!
+  endif
+  rm /home/jsoc/exports/tmp/JSOC_20210316_231.recnum
+  mv /home/jsoc/exports/tmp/JSOC_20210316_231.reqlog /home/jsoc/exports/tmp/done 
+  mv /home/jsoc/exports/tmp/JSOC_20210316_231.runlog /home/jsoc/exports/tmp/done 
+endif
+psql -h hmidb2 -U production -c "DELETE FROM jsoc.export_pending_reqs WHERE lower(address) = lower('hq_turtle@163.com') AND lower(request_id) = lower('JSOC_20210316_231')" jsoc

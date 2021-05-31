@@ -1,0 +1,15 @@
+# JSOC 
+version=0.5
+requestid=JSOC_20210316_231
+method=url-tar
+protocol=fits
+count=4
+size=61
+exptime=2021.03.16_05:14:21_UT
+dir=/SUM2/D1379332679/S00000
+status=0
+# DATA 
+hmi.B_720s[2017.09.02_15:12:00_TAI]	hmi.B_720s.20170902_151200_TAI.inclination.fits
+hmi.B_720s[2017.09.02_15:12:00_TAI]	hmi.B_720s.20170902_151200_TAI.azimuth.fits
+hmi.B_720s[2017.09.02_15:12:00_TAI]	hmi.B_720s.20170902_151200_TAI.disambig.fits
+hmi.B_720s[2017.09.02_15:12:00_TAI]	hmi.B_720s.20170902_151200_TAI.field.fits
