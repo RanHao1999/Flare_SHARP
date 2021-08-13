@@ -5,5 +5,5 @@ If one wants to calculate boundaries of NLFFF, one should go the 'doundaries' in
 If one wants to calculate PIL-mask for a Solar Active Region, one should go to PIL-mask file. The dbscan file branch is for calculating the coordinates of th points of the PIL-mask with dbscan method, whose codes are written in Python. The other branches are written in IDL.
 If one wants to calculate direct current and return current of a Solar Active Region, one should go to dc_rc file.
 
-If one wants to study the polarity inversion line and its impact on flare bursting of an active region, one can go to PIL_SHARP
+If one wants to study the polarity inversion line and its impact on flare bursting of an active region, one can go to PIL_SHARP_calculation.
 
