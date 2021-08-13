@@ -1,0 +1,78 @@
+This file helps one to determine the Polarity inversion line and the SHARP parameters of the whole region/PIL area.
+Furthermore, these codes can also represent the correlation results of the SHARP parameters in different areas with the flare burst envelope.
+One can use the codes with the following steps:
+
+1. Locat_PIL.py:
+   This code reads the Br.fits files and calculate the polarity inversion line area with a Gaussian filter. 
+   This code is wirten for batch processing, so it's ok to put a lot of Br.fits files in /data/JSOC folder.
+   
+   Input:
+   hmi.sharp_cea_720s.****.Br.fits
+   
+   Output:
+   Br.jpg in res/Br
+   map_pil.jpg in res/map_pil
+   coord_pil.txt in res/coord_pil
+   bitmap_positive.jpg in res/bitmap_positive
+   bitmap_negative.jpg in res/bitmap_negative
+   
+2.(Optional) Make_video.py:
+   If one has processed a series of Br.data of the same active region, this code helps to make the pictures of Br, map_pil, bitmaps into videos.
+   The output video locates in the same folder as the pictures do.
+
+3. SHARP_original.py:
+   This code simply reads the Br.fits file and output the SHARP parameters in res/SHARP_csv/csv_all/SHARP_original.csv
+   The SHARP parameters are associated with the .fits files themselves.
+   
+   Input:
+   hmi.sharp_cea_720s.****.Br.fits
+   
+   Output:
+   SHARP_original.csv
+
+4. SHARP_original_calculated.py
+   This code reads all the segments {magnetogram,bitmap,Bp,Bt,Br,Bp_err,Bt_err,Br_err,conf_disambig} of the hmi.sharp_cea_720.fits files and calculates all the SHARP parameters independently.
+   The calculating precess and functions refers to Bobra Monica's codes (@github/Monica Bobra).
+   The threshold in the codes can be different in different active regions, but basiclly it's not necessary to modify it.
+   This code calculates with multiple cores, one can go to line 306 (max_workers = ...) to change the number of cores one wants to use.
+   
+   Input:
+   hmi.sharp_cea_720s_{magnetogram,bitmap,Bp,Bt,Br,Bp_err,Bt_err,Br_err,conf_disambig}.fits
+   
+   Output:
+   SHARP_csv/SHARP_original_calculated*.csv
+   
+5. SHARP_pilmasked.py
+   Comparing to SHARP_original_calculated.py, this code takes 'coord_pil.txt' into consideration. It returns the SHARP parameters that are constrained in the polarity inversion line area.
+   So Locat_PIL.py must have been exsecuted before SHARP_pilmasked.py
+   
+   Input:
+   coord_pil.txt
+   hmi.sharp_cea_720s_{magnetogram,bitmap,Bp,Bt,Br,Bp_err,Bt_err,Br_err,conf_disambig}.fits
+   
+   Output:
+   SHARP_csv/SHARP_original_calculated*.csv
+   
+6. Others:
+   csv_read.py: read the .csv files one gets from process 4 and 5 then return new csv files in res/SHARP_csv/csv_all
+   Calculae_shaarpkey.py and sharpkey_pilmasked.py: function for calculating SHARP parameters for different conditions.
+   normal_funcs.py: some functions that are widely used in this project.
+   
+7. Flares.py:
+   Read the .csv files from res/SHARP_csv/csv_all to derive SHARP parameters in different conditions.
+   Read the flare data from data/flare/xrt_flarecat.csv and expand them to the envelope.
+   Plot the SHARP parameters and flare envelope in a same figure.
+   One may need to change the parameter 'AR_num', which refers to the active region one is looking into. e.g: For "AR 11158" which happened in 2011.02, AR_num is 11158.
+   
+   Inputs:
+   SHARP_original.csv
+   SHARP_original_calculated.csv
+   SHARP_pilmasked.csv
+   xrt_flarecat.csv
+   
+   outputs:
+   SHARP pictures in res/SHARP_Goes_pic
+   
+8. Inframe_photo.py(optional):
+   Inframe the pictures one outputs from Flares.py in the folders the pictures are in.
+  
