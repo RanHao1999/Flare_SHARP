@@ -3,6 +3,8 @@ This is the Readme file in this program.
 __auther__ = @RanHao
 
 Steps for using the codes:
+0. Run 'create_folders.py', the code creates the proper folders.
+
 1. Download HMI magnetic field datas into the 'data/JSOC' folder, which should include 'Br.fits', 'Bp.fits', 'Bt.fits',
    'Br_err.fits', 'Bp_err.fits', 'Bt_err.fits', 'bitmap.fits', 'conf_disambig.fits', 'magnetogram.fits'
 
