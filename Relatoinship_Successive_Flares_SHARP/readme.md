@@ -3,6 +3,7 @@
 This is the Readme file in this program.
 
 __author__ = @RanHao
+The functions for calculating SHARP parameters are adopted from mbobra.
 
 Steps for using the codes:
 
