@@ -19,9 +19,9 @@ Steps for using the codes:
    At this step, we output 'Br.jpg', 'bitmap_positive.jpg', 'bitmap_negative.jpg', 'coord_pil.txt' and 'map_pil.jpg' in the corresponding folders in 'res/...'
    If needed, one can run 'Make_video.py', by which we output the .avi videos of the evolution of 'Br', 'map_pil', 'bimap_positive' and 'bitmap_negative'.
 
-3. Go to 'SHARP_with_PIL.py', which is written for compute SHARP parameters with both original B data and PIL-masked B data.
-   Only two parameters needs to be modified: 'mask or not' in line 1262 and 'max_workers' in line 1256.
-   if 'mask or not' == 'no', then the results are from original B data (the whole AR), else from PIL-masked data.
+3. Go to 'SHARP_original(pilmaksed, original_calculated).py', which are written for compute SHARP parameters with original B data  or PIL-masked B data.
+   Original: SHARPs are directly read from the .fits file, original_calculated: read the B data and calculate the SHARPs in the whole AR, pilmaksed: read the B data and calculate the SHARPs in the PIL area.
+   
    At this step, we output .csv files each carries the SHARP parameters at one time.
 
 4. Run 'csv_read.py', we output two .csv files, which contain all SHARP parameters for one sort of selected data.
