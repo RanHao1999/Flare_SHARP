@@ -28,7 +28,7 @@ Steps for using the codes:
 
 5. Run 'Flares', one obtains the final result.
 
-The results of the programme is published in ApJ 937:43.
+The results of the programme are published in ApJ 937:43.
 
 Discussion and suggestions about the codes are warmly welcomed!
 
