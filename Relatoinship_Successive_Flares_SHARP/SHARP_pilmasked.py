@@ -19,7 +19,7 @@ output: .txt file as a table, including the array of all SHARP parameters needed
          16 SHARP parameters are included:
          TOTUSJH: Total unsigned current helicity  \ H_{total} = \Sigma abs(B_z \cdot J_z)
 
-original auther: Monica Bobra in 1 May 2015
+original author: Monica Bobra in 1 May 2015
 
 modified by: Ran Hao in 09 Aug 2021
 
